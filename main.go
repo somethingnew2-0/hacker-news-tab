@@ -1,20 +1,95 @@
 package main
 
 import (
-	"fmt"
+	"encoding/base64"
+	"log"
 	"net/http"
 	"os"
+	"os/exec"
+	"time"
+
+	"github.com/garyburd/redigo/redis"
+	"github.com/soveran/redisurl"
+)
+
+var (
+	jobs = make(chan string, 100)
+	pool redis.Pool
 )
 
 func main() {
+	pool = redis.Pool{
+		MaxIdle:     3,
+		MaxActive:   10,
+		IdleTimeout: 240 * time.Second,
+		Dial: func() (conn redis.Conn, err error) {
+			if len(os.Getenv("REDISCLOUD_URL")) > 0 {
+				conn, err = redisurl.ConnectToURL(os.Getenv("REDISCLOUD_URL"))
+			} else {
+				conn, err = redis.Dial("tcp", ":6379")
+			}
+			return conn, err
+		},
+		TestOnBorrow: func(c redis.Conn, t time.Time) error {
+			_, err := c.Do("PING")
+			return err
+		},
+	}
+
+	go phantom(jobs)
+
 	http.HandleFunc("/", hello)
-	fmt.Println("listening...")
+	log.Println("listening...")
 	err := http.ListenAndServe(":"+os.Getenv("PORT"), nil)
 	if err != nil {
 		panic(err)
 	}
 }
 
+func phantom(jobs <-chan string) {
+	for job := range jobs {
+		cmd := exec.Command("phantomjs", "rasterize.js", job, "300px*300px", "0.25")
+		cmd.Stderr = os.Stderr
+		out, err := cmd.Output()
+		conn := pool.Get()
+		if err != nil {
+			log.Println("Error rasterizing: ", err)
+		} else {
+			conn.Do("HSET", "screenshot", job, string(out))
+		}
+		conn.Close()
+	}
+}
+
 func hello(res http.ResponseWriter, req *http.Request) {
-	fmt.Fprintln(res, "hello, world")
+	defer req.Body.Close()
+	req.ParseForm()
+	if len(req.Form.Get("url")) > 0 {
+		conn := pool.Get()
+		defer conn.Close()
+
+		url := req.Form.Get("url")
+		log.Println(url)
+
+		exists, err := redis.Bool(conn.Do("HEXISTS", "screenshot", url))
+		if err != nil || !exists {
+			jobs <- url
+		}
+		for err != nil || !exists {
+			if err != nil {
+				log.Println(err)
+				return
+			}
+			time.Sleep(500 * time.Millisecond)
+			exists, err = redis.Bool(conn.Do("HEXISTS", "screenshot", url))
+		}
+		screenshot, err := redis.String(conn.Do("HGET", "screenshot", url))
+		if err != nil {
+			log.Println(err)
+			return
+		}
+		res.Header().Set("Content-Type", "image/png")
+		decode, _ := base64.StdEncoding.DecodeString(screenshot)
+		res.Write(decode)
+	}
 }
