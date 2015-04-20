@@ -1,0 +1,5 @@
+{
+	"ImportPath": "github.com/somethingnew2-0/hacker-news-tab",
+	"GoVersion": "go1.4.2",
+	"Deps": []
+}
