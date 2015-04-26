@@ -37,7 +37,7 @@ if (system.args.length < 2 || system.args.length > 4) {
                 var base64 = page.renderBase64('PNG');
                 console.log(base64);
                 phantom.exit();
-            }, 500);
+            }, 200);
         }
     });
 }

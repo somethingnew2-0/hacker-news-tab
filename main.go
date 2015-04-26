@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"runtime"
 	"time"
 
 	"github.com/garyburd/redigo/redis"
@@ -17,7 +18,9 @@ var (
 	pool redis.Pool
 )
 
-func main() {
+func init() {
+	runtime.GOMAXPROCS(runtime.NumCPU())
+
 	pool = redis.Pool{
 		MaxIdle:     3,
 		MaxActive:   10,
@@ -36,9 +39,20 @@ func main() {
 		},
 	}
 
-	go phantom(jobs)
+	conn := pool.Get()
+	_, err := conn.Do("FLUSHALL")
+	if err != nil {
+		panic(err)
+	}
+	conn.Close()
+}
 
-	http.HandleFunc("/", hello)
+func main() {
+	for w := 1; w <= 3; w++ {
+		go phantom(jobs)
+	}
+
+	http.HandleFunc("/", screenshot)
 	log.Println("listening...")
 	err := http.ListenAndServe(":"+os.Getenv("PORT"), nil)
 	if err != nil {
@@ -61,7 +75,7 @@ func phantom(jobs <-chan string) {
 	}
 }
 
-func hello(res http.ResponseWriter, req *http.Request) {
+func screenshot(res http.ResponseWriter, req *http.Request) {
 	defer req.Body.Close()
 	req.ParseForm()
 	if len(req.Form.Get("url")) > 0 {
