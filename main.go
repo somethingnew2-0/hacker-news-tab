@@ -69,7 +69,7 @@ func phantom(jobs <-chan string) {
 		if err != nil {
 			log.Println("Error rasterizing: ", err)
 		} else {
-			conn.Do("HSET", "screenshot", job, string(out))
+			conn.Do("SETEX", job, 21600, string(out))
 		}
 		conn.Close()
 	}
@@ -85,7 +85,7 @@ func screenshot(res http.ResponseWriter, req *http.Request) {
 		url := req.Form.Get("url")
 		log.Println(url)
 
-		exists, err := redis.Bool(conn.Do("HEXISTS", "screenshot", url))
+		exists, err := redis.Bool(conn.Do("EXISTS", url))
 		if err != nil || !exists {
 			jobs <- url
 		}
@@ -95,9 +95,9 @@ func screenshot(res http.ResponseWriter, req *http.Request) {
 				return
 			}
 			time.Sleep(500 * time.Millisecond)
-			exists, err = redis.Bool(conn.Do("HEXISTS", "screenshot", url))
+			exists, err = redis.Bool(conn.Do("EXISTS", url))
 		}
-		screenshot, err := redis.String(conn.Do("HGET", "screenshot", url))
+		screenshot, err := redis.String(conn.Do("GET", url))
 		if err != nil {
 			log.Println(err)
 			return
