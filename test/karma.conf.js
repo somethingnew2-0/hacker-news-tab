@@ -1,6 +1,6 @@
 // Karma configuration
 // http://karma-runner.github.io/0.12/config/configuration-file.html
-// Generated on 2015-04-28 using
+// Generated on 2015-04-30 using
 // generator-karma 1.0.0
 
 module.exports = function(config) {
@@ -22,9 +22,11 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       // bower:js
+      'bower_components/jquery/dist/jquery.js',
       'bower_components/angular/angular.js',
       'bower_components/firebase/firebase.js',
       'bower_components/angularfire/dist/angularfire.js',
+      'bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js',
       'bower_components/angular-animate/angular-animate.js',
       'bower_components/angular-cookies/angular-cookies.js',
       'bower_components/angular-resource/angular-resource.js',
