@@ -1,13 +1,13 @@
 'use strict';
 /**
  * @ngdoc overview
- * @name hackerNewsTabApp:routes
+ * @name HackerNewsTabApp:routes
  * @description
  * # routes.js
  *
  * Configure routes for use with Angular, and apply authentication security
  */
-angular.module('hackerNewsTabApp')
+angular.module('HackerNewsTabApp')
 
   .config(['$routeProvider', function($routeProvider) {
     $routeProvider

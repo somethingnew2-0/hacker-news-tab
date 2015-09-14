@@ -2,16 +2,13 @@
 
 /**
  * @ngdoc function
- * @name hackerNewsTabApp.controller:MainCtrl
+ * @name HackerNewsTabApp.controller:MainCtrl
  * @description
  * # MainCtrl
- * Controller of the hackerNewsTabApp
+ * Controller of the HackerNewsTabApp
  */
-angular.module('hackerNewsTabApp')
-  .controller('MainCtrl', function ($scope) {
-    $scope.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
+angular.module('HackerNewsTabApp')
+  .controller('MainCtrl', function ($scope, HackerNews) {
+    $scope.topStories =
+      HackerNews.fetchHomepage();
   });

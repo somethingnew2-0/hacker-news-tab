@@ -2,13 +2,13 @@
 
 /**
  * @ngdoc overview
- * @name hackerNewsTabApp
+ * @name HackerNewsTabApp
  * @description
- * # hackerNewsTabApp
+ * # HackerNewsTabApp
  *
  * Main module of the application.
  */
-angular.module('hackerNewsTabApp', [
+angular.module('HackerNewsTabApp', [
     'ngAnimate',
     'ngCookies',
     'ngResource',
@@ -16,5 +16,5 @@ angular.module('hackerNewsTabApp', [
     'ngSanitize',
     'ngTouch',
     'firebase',
-    'firebase.ref'
+    'firebase.ref',
   ]);
