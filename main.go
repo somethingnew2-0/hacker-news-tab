@@ -23,7 +23,7 @@ func init() {
 
 	pool = redis.Pool{
 		MaxIdle:     3,
-		MaxActive:   10,
+		MaxActive:   30,
 		IdleTimeout: 240 * time.Second,
 		Dial: func() (conn redis.Conn, err error) {
 			if len(os.Getenv("REDISCLOUD_URL")) > 0 {
@@ -71,16 +71,18 @@ func main() {
 
 func phantom(jobs <-chan string) {
 	for job := range jobs {
-		cmd := exec.Command("phantomjs", "rasterize.js", job, "300px*300px", "0.25")
-		cmd.Stderr = os.Stderr
-		out, err := cmd.Output()
-		conn := pool.Get()
-		if err != nil {
-			log.Println("Error rasterizing: ", err)
-		} else {
-			conn.Do("SETEX", job, 21600, string(out))
-		}
-		conn.Close()
+		func(job string) {
+			cmd := exec.Command("phantomjs", "rasterize.js", job, "300px*300px", "0.25")
+			cmd.Stderr = os.Stderr
+			out, err := cmd.Output()
+			conn := pool.Get()
+			defer conn.Close()
+			if err != nil {
+				log.Println("Error rasterizing: ", err)
+			} else {
+				conn.Do("SETEX", job, 21600, string(out))
+			}
+		}(job)
 	}
 }
 
