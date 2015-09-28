@@ -24,6 +24,7 @@ func init() {
 	pool = redis.Pool{
 		MaxIdle:     3,
 		MaxActive:   30,
+		Wait:        true,
 		IdleTimeout: 240 * time.Second,
 		Dial: func() (conn redis.Conn, err error) {
 			if len(os.Getenv("REDISCLOUD_URL")) > 0 {
