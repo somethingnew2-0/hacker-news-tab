@@ -15,13 +15,19 @@
     <!-- endbuild -->
   </head>
   <body ng-app="HackerNewsTabApp">
-    <!--[if lt IE 7]>
-      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-    <![endif]-->
-
-    <div class="container">
+    <a href="http://news.ycombinator.com">
+      <svg width="30px" height="30px" viewbox="0 0 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+          <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+              <g sketch:type="MSArtboardGroup">
+                  <g sketch:type="MSLayerGroup">
+                      <rect stroke="#FFFFFF" stroke-width="2" fill="#FF6600" sketch:type="MSShapeGroup" x="0" y="0" width="30" height="30"></rect>
+                      <path d="M16.6107351,16.3715829 L21.185276,7.74233542 L18.8564188,7.74233542 L16.4443882,12.6495701 C16.2919027,12.9684033 16.1463506,13.2803007 16.0077275,13.5852716 C15.8691043,13.8902426 15.7374143,14.1882778 15.6126535,14.4793864 C15.501755,14.1605532 15.3804616,13.8486558 15.2487696,13.5436849 C15.1170776,13.238714 14.974991,12.9337477 14.8225055,12.6287767 L12.4520617,7.74233542 L9.99844432,7.74233542 L14.5313984,16.3299961 L14.5313984,22.0689655 L16.6107351,22.0689655 L16.6107351,16.3715829 Z" fill="#FFFFFF" sketch:type="MSShapeGroup"></path>
+                  </g>
+              </g>
+          </g>
+      </svg>
+    </a>
     <div ng-view=""></div>
-    </div>
 
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
@@ -48,18 +54,21 @@
     <script src="bower_components/angular-route/angular-route.js"></script>
     <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
     <script src="bower_components/angular-touch/angular-touch.js"></script>
+    <script src="bower_components/moment/moment.js"></script>
+    <script src="bower_components/angular-moment/angular-moment.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
-        <!-- build:js({.tmp,app}) scripts/scripts.js -->
-        <script src="scripts/app.js"></script>
-        <script src="scripts/controllers/main.js"></script>
-        <script src="scripts/directives/story.js"></script>
-        <script src="scripts/angularfire/config.js"></script>
-        <script src="scripts/angularfire/firebase.ref.js"></script>
-        <script src="scripts/filters/reverse.js"></script>
-        <script src="scripts/services/hackernews.js"></script>
-        <script src="scripts/routes.js"></script>
-        <!-- endbuild -->
+    <!-- build:js({.tmp,app}) scripts/scripts.js -->
+    <script src="scripts/app.js"></script>
+    <script src="scripts/controllers/main.js"></script>
+    <script src="scripts/directives/story.js"></script>
+    <script src="scripts/angularfire/config.js"></script>
+    <script src="scripts/angularfire/firebase.ref.js"></script>
+    <script src="scripts/filters/domain.js"></script>
+    <script src="scripts/filters/image.js"></script>
+    <script src="scripts/services/hackernews.js"></script>
+    <script src="scripts/routes.js"></script>
+    <!-- endbuild -->
 </body>
 </html>

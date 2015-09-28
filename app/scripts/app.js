@@ -17,4 +17,5 @@ angular.module('HackerNewsTabApp', [
     'ngTouch',
     'firebase',
     'firebase.ref',
+    'angularMoment'
   ]);

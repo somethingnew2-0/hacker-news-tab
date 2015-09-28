@@ -52,9 +52,18 @@ func main() {
 		go phantom(jobs)
 	}
 
-	http.HandleFunc("/", screenshot)
+	fs := http.FileServer(http.Dir("dist"))
+	http.Handle("/", fs)
+
+	http.HandleFunc("/screenshot", screenshot)
 	log.Println("listening...")
-	err := http.ListenAndServe(":"+os.Getenv("PORT"), nil)
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8000"
+	}
+
+	err := http.ListenAndServe(":"+port, nil)
 	if err != nil {
 		panic(err)
 	}
